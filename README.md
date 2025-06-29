@@ -1,2 +1,63 @@
 # Bosquejo-inventario-PY
 Primer bosquejo de inventario en PY . Primer tarea en programación para terminar etapa de cursada. SQL y colorama como agregados
+
+Productos ===")
+            db.visualizar_productos()
+
+        elif opcion == "3":
+            print(f"\n{Fore.CYAN if colorama_available else ''}=== Actualizar Producto ===")
+            id = validar_numero("ID del producto a actualizar: ", "int", minimo=1)
+            print(f"{Fore.YELLOW if colorama_available else ''}Deje en blanco los campos que no desea actualizar.")
+            nombre = validar_texto("Nuevo nombre (opcional): ", max_longitud=50)
+            descripcion = validar_texto("Nueva descripción (opcional): ", max_longitud=200)
+            cantidad_input = input(f"{Fore.YELLOW if colorama_available else ''}Nueva cantidad (opcional, ingrese un número o deje en blanco): ").strip()
+            cantidad = int(cantidad_input) if cantidad_input and cantidad_input.isdigit() else None
+            precio_input = input(f"{Fore.YELLOW if colorama_available else ''}Nuevo precio (opcional, ingrese un número o deje en blanco): ").strip()
+            precio = float(precio_input) if precio_input and precio_input.replace(".", "").replace("-", "").isdigit() else None
+            categoria = validar_texto("Nueva categoría (opcional): ", max_longitud=50)
+            if any([nombre, descripcion is not None, cantidad is not None, precio is not None, categoria is not None]):
+                db.actualizar_producto(id, nombre, descripcion, cantidad, precio, categoria)
+            else:
+                print(f"{Fore.YELLOW if colorama_available else ''}No se proporcionaron datos para actualizar.")
+
+        elif opcion == "4":
+            print(f"\n{Fore.CYAN if colorama_available else ''}=== Eliminar Producto ===")
+            id = validar_numero("ID del producto a eliminar: ", "int", minimo=1)
+            db.eliminar_producto(id)
+
+        elif opcion == "5":
+            print(f"\n{Fore.CYAN if colorama_available else ''}=== Buscar Producto ===")
+            print(f"{Fore.WHITE if colorama_available else ''}1. Buscar por ID")
+            print(f"{Fore.WHITE if colorama_available else ''}2. Buscar por nombre")
+            print(f"{Fore.WHITE if colorama_available else ''}3. Buscar por categoría")
+            tipo_busqueda = input(f"{Fore.YELLOW if colorama_available else ''}Seleccione tipo de búsqueda (1-3): ").strip()
+            if tipo_busqueda == "1":
+                id = validar_numero("ID del producto: ", "int", minimo=1)
+                db.buscar_producto(id=id)
+            elif tipo_busqueda == "2":
+                nombre = validar_texto("Nombre del producto (parcial o completo): ", obligatorio=True, max_longitud=50)
+                db.buscar_producto(nombre=nombre)
+            elif tipo_busqueda == "3":
+                categoria = validar_texto("Categoría del producto (parcial o completa): ", obligatorio=True, max_longitud=50)
+                db.buscar_producto(categoria=categoria)
+            else:
+                print(f"{Fore.RED if colorama_available else ''}Opción de búsqueda inválida. Seleccione 1, 2 o 3.")
+
+        elif opcion == "6":
+            print(f"\n{Fore.CYAN if colorama_available else ''}=== Reporte de Baja Cantidad ===")
+            limite = validar_numero("Límite de cantidad: ", "int", minimo=0)
+            db.reporte_baja_cantidad(limite)
+
+        elif opcion == "7":
+            print(f"{Fore.GREEN if colorama_available else ''}¡Gracias por usar el sistema de inventario! Hasta pronto.")
+            break
+        else:
+            print(f"{Fore.RED if colorama_available else ''}Opción inválida. Por favor, seleccione una opción válida (1-7).")
+        
+        input(f"{Fore.YELLOW if colorama_available else ''}\nPresione Enter para continuar...")
+
+if __name__ == "__main__":
+    if not colorama_available:
+        print("Nota: El módulo 'colorama' no está instalado. Los colores no se mostrarán.")
+        print("Para instalar colorama, ejecute: pip install colorama")
+    menu_principal()
